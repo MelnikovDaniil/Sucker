@@ -11,8 +11,10 @@ GameObject:
   - component: {fileID: 522710494109775700}
   - component: {fileID: 3525986428066937073}
   - component: {fileID: 1660181951704190011}
-  - component: {fileID: 3512006851181654754}
-  m_Layer: 0
+  - component: {fileID: 8122121212374183647}
+  - component: {fileID: 4904068844222768839}
+  - component: {fileID: 8764221376412722561}
+  m_Layer: 3
   m_Name: Sucker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,20 +86,51 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3512006851181654754
-MeshCollider:
+--- !u!136 &8122121212374183647
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 867746397791219182}
-  m_Material: {fileID: 13400000, guid: 42c108f929adf23489732297653c0755, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 16
-  m_Mesh: {fileID: 2534964839176971238, guid: e5536dc797e22494f8a40276f073c2b2, type: 3}
+  m_Enabled: 1
+  m_Radius: 0.005
+  m_Height: 0.016
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0.036}
+--- !u!114 &4904068844222768839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867746397791219182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6757b231cedd544c583ef8aeaf773b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thickness: 0
+  material: {fileID: 0}
+  filter: -65535
+  m_SourceCollider: {fileID: 8122121212374183647}
+  m_DistanceField: {fileID: 0}
+--- !u!136 &8764221376412722561
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867746397791219182}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.0013
+  m_Height: 0.0195
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0.0024}
 --- !u!1 &1991717143087440252
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,7 +142,9 @@ GameObject:
   - component: {fileID: 1991717143087440240}
   - component: {fileID: 1991717143087440241}
   - component: {fileID: 2416709813960765689}
-  m_Layer: 0
+  - component: {fileID: 1567354536283926726}
+  - component: {fileID: 3367712164673155576}
+  m_Layer: 3
   m_Name: SuckerSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ac72920f4d9d474eb8e4fc9facba26e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  springConnectionPosition: {x: 0, y: -0.75, z: 0}
+  springConnectionPosition: {x: 0, y: -0.95, z: 0}
 --- !u!54 &2416709813960765689
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -155,9 +190,36 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 180
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 56
   m_CollisionDetection: 0
+--- !u!136 &1567354536283926726
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1991717143087440252}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.25
+  m_Height: 1
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3367712164673155576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1991717143087440252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62359d80fdc0e4315ab6331b78ec5b90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kinematicForParticles: 0
