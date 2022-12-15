@@ -15,6 +15,7 @@ public class Obstacle : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         rigidbody.isKinematic = true;
+        gameObject.layer = LayerMask.NameToLayer("Obstacle");
     }
 
     void Update()
