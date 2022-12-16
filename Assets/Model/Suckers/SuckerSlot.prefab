@@ -142,8 +142,9 @@ GameObject:
   - component: {fileID: 1991717143087440240}
   - component: {fileID: 1991717143087440241}
   - component: {fileID: 2416709813960765689}
-  - component: {fileID: 1567354536283926726}
   - component: {fileID: 3367712164673155576}
+  - component: {fileID: 1567354536283926726}
+  - component: {fileID: 4845468097232001223}
   m_Layer: 3
   m_Name: SuckerSlot
   m_TagString: Untagged
@@ -181,7 +182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   springConnectionPosition: {x: 0, y: -0.95, z: 0}
   suckerPosition: {x: 0.8, y: 0.2, z: 0}
-  maxRotationDuringSuck: 15
+  maxRotationDuringSuck: 45
 --- !u!54 &2416709813960765689
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -198,20 +199,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 56
   m_CollisionDetection: 0
---- !u!136 &1567354536283926726
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1991717143087440252}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.25
-  m_Height: 1
-  m_Direction: 0
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3367712164673155576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,3 +212,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kinematicForParticles: 0
+--- !u!136 &1567354536283926726
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1991717143087440252}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.2
+  m_Height: 0.5
+  m_Direction: 0
+  m_Center: {x: -0.7, y: 0.10000001, z: 0}
+--- !u!136 &4845468097232001223
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1991717143087440252}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.2
+  m_Height: 0.5
+  m_Direction: 0
+  m_Center: {x: 0.7, y: 0.10000001, z: 0}
