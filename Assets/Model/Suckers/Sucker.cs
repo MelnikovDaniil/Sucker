@@ -112,6 +112,8 @@ public class Sucker : MonoBehaviour
             connectionPlace.transform.localRotation = Quaternion.identity;
             connectionPlace.connectedBody = rigidbody;
             //rigidbody.isKinematic = true;
+
+            obstacle.Connect();
             OnSuck?.Invoke(obstacle);
         }
     }

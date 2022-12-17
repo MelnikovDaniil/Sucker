@@ -6,6 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Obstacle : MonoBehaviour
 {
+    public event Action OnConnect;
     public float rotationSpeed = 100;
 
     [NonSerialized]
@@ -21,5 +22,10 @@ public class Obstacle : MonoBehaviour
     void Update()
     {
         transform.rotation *= Quaternion.Euler(0, 0, rotationSpeed * Time.deltaTime);
+    }
+
+    public void Connect()
+    {
+        OnConnect?.Invoke();
     }
 }
