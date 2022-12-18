@@ -32,6 +32,7 @@ public class SuckerController : MonoBehaviour
 
     private void UnSuckObstacle()
     {
+
     }
 
     public void SuckObstacle(Obstacle obstacle)

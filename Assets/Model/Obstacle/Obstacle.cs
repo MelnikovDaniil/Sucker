@@ -7,6 +7,7 @@ using UnityEngine;
 public class Obstacle : MonoBehaviour
 {
     public event Action OnConnect;
+    public event Action OnDisconnect;
     public float rotationSpeed = 100;
 
     [NonSerialized]
@@ -27,5 +28,10 @@ public class Obstacle : MonoBehaviour
     public void Connect()
     {
         OnConnect?.Invoke();
+    }
+
+    public void Disconnect()
+    {
+        OnDisconnect?.Invoke();
     }
 }

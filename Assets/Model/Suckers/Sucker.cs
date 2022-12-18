@@ -10,6 +10,7 @@ public class Sucker : MonoBehaviour
 {
     public event Action<Obstacle> OnSuck;
     public event Action OnUnSuck;
+    public event Action OnUnSuckTry;
     public Vector3 springConnectionPosition;
 
     [Space]
@@ -19,70 +20,114 @@ public class Sucker : MonoBehaviour
     [NonSerialized]
     public bool isSucked;
     [NonSerialized]
+    public bool ableToSuck;
+    [NonSerialized]
+    public bool ableToUnSuck;
+
+    [NonSerialized]
     public Rigidbody rigidbody;
 
     private FixedJoint connectionPlace;
-    private bool blocked;
 
     private void Awake()
     {
-        //spring = GetComponent<SpringJoint>();
         rigidbody = GetComponent<Rigidbody>();
+    }
+
+    private void Start()
+    {
+        ableToSuck = true;
+        ableToUnSuck = true;
     }
 
     public void UnSuck()
     {
         if (connectionPlace != null)
         {
-            StartCoroutine(UnSuckRoutine());
-            //rigidbody.isKinematic = false;
-            isSucked = false;
-            Destroy(connectionPlace.gameObject);
-            connectionPlace = null;
-            OnUnSuck?.Invoke();
+            if (ableToUnSuck)
+            {
+                StartCoroutine(UnSuckRoutine());
+                isSucked = false;
+                Destroy(connectionPlace.gameObject);
+                connectionPlace = null;
+                OnUnSuck?.Invoke();
+            }
+            else
+            {
+                OnUnSuckTry?.Invoke();
+            }
         }
     }
 
     private IEnumerator UnSuckRoutine()
     {
         yield return new WaitForSeconds(0.5f);
-        blocked = false;
+        ableToSuck = true;
     }
-
-    //private void OnCollisionEnter(Collision other)
-    //{
-    //    if (!isSucked && other.gameObject.TryGetComponent(out Obstacle obstacle))
-    //    {
-    //        isSucked = true;
-    //        var contactPoint = other.GetContact(0);
-    //        connectionPlace = new GameObject($"ConnectionPlace of {this.name}", typeof(FixedJoint)).GetComponent<FixedJoint>();
-    //        connectionPlace.GetComponent<Rigidbody>().isKinematic = true;
-    //        connectionPlace.transform.parent = obstacle.transform;
-    //        connectionPlace.transform.position = new Vector3(contactPoint.point.x, contactPoint.point.y, 0);
-    //        connectionPlace.transform.localRotation = Quaternion.identity;
-    //        connectionPlace.connectedBody = rigidbody;
-    //        //rigidbody.isKinematic = true;
-    //        OnSuck?.Invoke(obstacle);
-    //    }
-    //}
 
     private void OnTriggerStay(Collider other)
     {
-        if (!blocked && !isSucked && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
+        if (ableToSuck && !isSucked 
+            && other.attachedRigidbody != null
+            && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
         {
-            Suck(other, obstacle);
+            SuckObstacle(other, obstacle);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!blocked && !isSucked && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
+        if (ableToSuck && !isSucked)
         {
-            Suck(other, obstacle);
+            if (other.attachedRigidbody != null
+                && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
+            {
+                SuckObstacle(other, obstacle);
+            }
+            //else if (other.gameObject.TryGetComponent(out FinishReward finishReward))
+            //{
+            //    SuckReward(finishReward);
+            //}
         }
     }
 
-    private void Suck(Collider collider, Obstacle obstacle)
+    //private void SuckReward(FinishReward finishReward)
+    //{
+    //    var leftAngle = CalculateRewardRotationAngle(false) ?? float.MaxValue;
+    //    var rightAngle = CalculateRewardRotationAngle(true) ?? float.MaxValue;
+
+    //    var rotationAngle = Mathf.Abs(leftAngle) >= Mathf.Abs(rightAngle) ? rightAngle : leftAngle;
+
+    //    if (rotationAngle != float.MaxValue)
+    //    {
+    //        blocked = true;
+    //        isSucked = true;
+
+    //        var previousSuckPositions = GetSuckerPositions();
+    //        var nextRotationPositions = GetSuckerPositions(rotationAngle);
+    //        var previousMiddleSuckPoint = Vector3.Lerp(previousSuckPositions.left, previousSuckPositions.right, 0.5f);
+    //        var nextMiddleSuckPoint = Vector3.Lerp(nextRotationPositions.left, nextRotationPositions.right, 0.5f);
+    //        var closiestPoint = Physics.ClosestPoint(nextMiddleSuckPoint, collider, collider.transform.position, collider.transform.rotation);
+    //        var moveOffset = closiestPoint - previousMiddleSuckPoint;
+    //        transform.rotation = transform.rotation * Quaternion.Euler(0, 0, rotationAngle);
+    //        transform.position += moveOffset;
+
+    //        connectionPlace = new GameObject($"ConnectionPlace of {this.name}", typeof(FixedJoint)).GetComponent<FixedJoint>();
+    //        var placeRigidbody = connectionPlace.GetComponent<Rigidbody>();
+    //        placeRigidbody.isKinematic = true;
+    //        placeRigidbody.constraints = rigidbody.constraints;
+    //        connectionPlace.transform.parent = obstacle.transform;
+    //        connectionPlace.transform.position = transform.position;
+    //        connectionPlace.transform.localRotation = Quaternion.identity;
+    //        connectionPlace.connectedBody = rigidbody;
+    //        //rigidbody.isKinematic = true;
+
+    //        obstacle.Connect();
+    //        OnSuck?.Invoke(obstacle);
+    //    }
+    //}
+
+    private void SuckObstacle(Collider collider, Obstacle obstacle)
     {
         var leftAngle = CalculateRotationAngle(collider, false) ?? float.MaxValue;
         var rightAngle = CalculateRotationAngle(collider, true) ?? float.MaxValue;
@@ -91,7 +136,7 @@ public class Sucker : MonoBehaviour
 
         if (rotationAngle != float.MaxValue)
         {
-            blocked = true;
+            ableToSuck = false;
             isSucked = true;
 
             var previousSuckPositions = GetSuckerPositions();
@@ -117,6 +162,24 @@ public class Sucker : MonoBehaviour
             OnSuck?.Invoke(obstacle);
         }
     }
+
+    //private float? CalculateRewardRotationAngle(bool isRightPositionPined)
+    //{
+    //    var suckerCurrentPositions = GetSuckerPositions();
+
+    //    var pinnedPoint = isRightPositionPined ? suckerCurrentPositions.right : suckerCurrentPositions.left;
+    //    var movingPoint = isRightPositionPined ? suckerCurrentPositions.left : suckerCurrentPositions.right;
+    //    var colliders = Physics.OverlapSphere(pinnedPoint, 0.1f, LayerMask.GetMask("Obstacle"));
+
+    //    if (colliders.Contains(searchingCollider))
+    //    {
+    //        var differenceVector = movingPoint - pinnedPoint;
+
+    //        return FindSuckAngle(searchingCollider, pinnedPoint, differenceVector, isRightPositionPined ? 1 : -1);
+    //    }
+
+    //    return null;
+    //}
 
     private float? CalculateRotationAngle(Collider searchingCollider, bool isRightPositionPined)
     {
@@ -181,7 +244,7 @@ public class Sucker : MonoBehaviour
     //    return angle;
     //} 
 
-    private (Vector3 left, Vector3 right) GetSuckerPositions(float angle = 0)
+    public (Vector3 left, Vector3 right) GetSuckerPositions(float angle = 0)
     {
         var rotationOfSuck = transform.rotation * Quaternion.Euler(0, 0, angle);
         var suckMiddlePosition = transform.position + rotationOfSuck * Vector3.up * suckerPosition.y;
