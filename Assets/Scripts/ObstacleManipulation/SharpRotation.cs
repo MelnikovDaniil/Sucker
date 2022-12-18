@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SharpRotation : MonoBehaviour
 {
     public float rotationSpeed = 180;
     public float pauseDuration = 1;
-    public float turningStepAngle = 120;
     public bool moveOnSuck;
+    public List<float> turnAnglePatten;
 
+    private Queue<float> turnAngleQueue = new Queue<float>();
     private float currentPauseDuration;
-    private Quaternion targetRotation = Quaternion.identity;
+    private Quaternion? targetRotation;
 
     private void Start()
     {
@@ -18,15 +20,15 @@ public class SharpRotation : MonoBehaviour
         {
             obstacle.OnConnect += Connect;
         }
-
+        currentPauseDuration = pauseDuration;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (targetRotation != Quaternion.identity && currentPauseDuration <= 0)
+        if (targetRotation.HasValue && currentPauseDuration <= 0)
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation.Value, rotationSpeed * Time.deltaTime);
             if (transform.rotation == targetRotation)
             {
                 currentPauseDuration = pauseDuration;
@@ -35,7 +37,7 @@ public class SharpRotation : MonoBehaviour
         else if (!moveOnSuck)
         {
             currentPauseDuration -= Time.deltaTime;
-            targetRotation = transform.rotation * Quaternion.Euler(0, 0, turningStepAngle);
+            targetRotation = Quaternion.Euler(0, 0, GetNextAngle());
         }
     }
 
@@ -44,7 +46,17 @@ public class SharpRotation : MonoBehaviour
         if (moveOnSuck)
         {
             currentPauseDuration = 0;
-            targetRotation = transform.rotation * Quaternion.Euler(0, 0, turningStepAngle);
+            targetRotation = Quaternion.Euler(0, 0, GetNextAngle());
         }
+    }
+
+    private float GetNextAngle()
+    {
+        if (!turnAngleQueue.Any())
+        {
+            turnAngleQueue = new Queue<float>(turnAnglePatten);
+        }
+
+        return turnAngleQueue.Dequeue();
     }
 }

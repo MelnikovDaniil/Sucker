@@ -23,7 +23,7 @@ public class SuckerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Mouse0))
+        if (Input.GetKeyUp(KeyCode.Space))
         {
             sucker1.UnSuck();
             sucker2.UnSuck();

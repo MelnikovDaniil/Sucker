@@ -68,7 +68,7 @@ public class Sucker : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!blocked && !isSucked && other.gameObject.TryGetComponent(out Obstacle obstacle))
+        if (!blocked && !isSucked && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
         {
             Suck(other, obstacle);
         }
@@ -76,7 +76,7 @@ public class Sucker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!blocked && !isSucked && other.gameObject.TryGetComponent(out Obstacle obstacle))
+        if (!blocked && !isSucked && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
         {
             Suck(other, obstacle);
         }

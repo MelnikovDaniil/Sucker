@@ -90,9 +90,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c11d195d92eda4c40b0e245880087bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 100
+  rotationSpeed: 75
   pauseDuration: 1
-  turningStepAngle: 200
+  turningStepAngle: -45
   moveOnSuck: 1
 --- !u!1001 &4066520972656663668
 PrefabInstance:

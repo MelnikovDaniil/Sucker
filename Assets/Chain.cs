@@ -14,6 +14,7 @@ public class Chain : MonoBehaviour
     public float compressionTime = 1.5f;
     public float decompressionTime = 0.1f;
     public float maxElementAngle = 5f;
+    public float maxElementDistance = 1f;
 
     [Space]
     public float springLenth = 4;
@@ -36,6 +37,11 @@ public class Chain : MonoBehaviour
 
     private float currentElementRotation;
     private float nextElementRotation;
+
+    private Vector3 currentElementPosition;
+    private Vector3 nextElementPosition;
+    private Vector3 nextElementDirection;
+    private float nextElementDistance;
 
     private void Start()
     {
@@ -61,14 +67,14 @@ public class Chain : MonoBehaviour
 
         if (Time.timeScale > 0)
         {
-            if (compressionProgress > compressionLimit && Input.GetKey(KeyCode.Mouse0))
+            if (compressionProgress > compressionLimit && Input.GetKey(KeyCode.Space))
             {
                 compressionProgress = Mathf.Clamp(compressionProgress, compressionLimit, 1.00f);
                 compressionProgress -= compressionSpeed * Time.deltaTime;
                 compressionProgress = Mathf.Clamp(compressionProgress, compressionLimit, 1.00f);
             }
 
-            if (Input.GetKeyUp(KeyCode.Mouse0))
+            if (Input.GetKeyUp(KeyCode.Space))
             {
                 currentDecompressionTime = (compressionProgress - compressionLimit) / (1 - compressionLimit) * decompressionTime;
             }
@@ -103,6 +109,7 @@ public class Chain : MonoBehaviour
                 }
             }
             LimitRotation();
+            //LimitDistance();
         }
     }
 
@@ -177,6 +184,29 @@ public class Chain : MonoBehaviour
         spring.maxDistance = 0f;
         spring.enableCollision = true;
         spring.autoConfigureConnectedAnchor = false;
+    }
+
+    private void LimitDistance()
+    {
+        currentRotationElements = new List<(Transform, Vector3)>(rotationElements);
+        if (sucker2.isSucked)
+        {
+            currentRotationElements.Reverse();
+        }
+        for (int i = 0; i < rotationElements.Count - 1; i++)
+        {
+            var distanceBonus = 0f;
+            if (i == 0 || i == rotationElements.Count - 2)
+            {
+                distanceBonus = 1.5f;
+            }
+            currentElementPosition = rotationElements[i].transform.position;
+            nextElementPosition = rotationElements[i + 1].transform.position;
+            nextElementDirection = nextElementPosition - currentElementPosition;
+            nextElementDistance = Mathf.Clamp(nextElementDirection.magnitude, 0, maxElementDistance * compressionProgress + distanceBonus);
+
+            rotationElements[i + 1].transform.position = currentElementPosition + nextElementDirection.normalized * nextElementDistance;
+        }
     }
 
     private void LimitRotation()
