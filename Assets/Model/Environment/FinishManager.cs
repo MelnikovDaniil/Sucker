@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class FinishManager : MonoBehaviour
@@ -5,8 +7,10 @@ public class FinishManager : MonoBehaviour
     public static FinishManager Instance;
     public RewardLine rewardLine;
     public Vector3 highestPoint;
+    public float resultsAfterTime;
 
     private bool isFinished;
+    private Coroutine resultsRoutine;
 
     private void Awake()
     {
@@ -16,10 +20,23 @@ public class FinishManager : MonoBehaviour
     private void Finishing()
     {
         isFinished = true;
+        GameManager.Instance.DisableDeathCollider();
         SuckerController.Instance.sucker1.OnSuck += rewardLine.SuckLine;
         SuckerController.Instance.sucker2.OnSuck += rewardLine.SuckLine;
+        SuckerController.Instance.sucker1.OnSuck += ResultAfterReward;
+        SuckerController.Instance.sucker2.OnSuck += ResultAfterReward;
         SuckerController.Instance.sucker1.OnUnSuckTry += rewardLine.UnSuckTry;
         SuckerController.Instance.sucker2.OnUnSuckTry += rewardLine.UnSuckTry;
+        resultsRoutine = StartCoroutine(ShowResultsRoutine());
+    }
+
+    private void ResultAfterReward(Obstacle obj)
+    {
+        if (resultsRoutine != null && obj.gameObject == rewardLine.gameObject)
+        {
+            StopCoroutine(resultsRoutine);
+            resultsRoutine = null;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -33,6 +50,12 @@ public class FinishManager : MonoBehaviour
     public Vector3 GetHighestPoint()
     {
         return transform.position + highestPoint;
+    }
+
+    public IEnumerator ShowResultsRoutine()
+    {
+        yield return new WaitForSeconds(resultsAfterTime);
+        UIManager.Instance.ShowFinishPanel();
     }
 
     private void OnDrawGizmos()

@@ -100,6 +100,7 @@ public class RewardLine : MonoBehaviour
             rigidbody.isKinematic = false;
             SuckerController.Instance.sucker1.ableToSuck = false;
             SuckerController.Instance.sucker1.ableToSuck = false;
+            StartCoroutine(FinishManager.Instance.ShowResultsRoutine());
         }
     }
 

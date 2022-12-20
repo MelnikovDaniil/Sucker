@@ -54,6 +54,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rewardLine: {fileID: 615385213440304690}
   highestPoint: {x: 0, y: 7, z: 0}
+  resultsAfterTime: 1.5
 --- !u!65 &615385212662414657
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -21,6 +21,12 @@ public class SuckerController : MonoBehaviour
         sucker2.OnUnSuck += UnSuckObstacle;
     }
 
+    private void Start()
+    {
+        sucker1.OnDeath += GameManager.Instance.Death;
+        sucker2.OnDeath += GameManager.Instance.Death;
+    }
+
     private void Update()
     {
         if (Input.GetKeyUp(KeyCode.Space))
@@ -40,6 +46,8 @@ public class SuckerController : MonoBehaviour
         if (!CameraManager.Instance.followByPlunger)
         {
             CameraManager.Instance.SetTarget(obstacle.transform.position);
-        } 
+        }
+
+        GameManager.Instance.MoveDeathCollider(obstacle.transform.position);
     }
 }

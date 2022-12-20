@@ -10,6 +10,7 @@ public class Sucker : MonoBehaviour
 {
     public event Action<Obstacle> OnSuck;
     public event Action OnUnSuck;
+    public event Action OnDeath;
     public event Action OnUnSuckTry;
     public Vector3 springConnectionPosition;
 
@@ -77,17 +78,17 @@ public class Sucker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (ableToSuck && !isSucked)
+        if (other.tag == "deathCollider")
+        {
+            OnDeath?.Invoke();
+        }
+        else if (ableToSuck && !isSucked)
         {
             if (other.attachedRigidbody != null
                 && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
             {
                 SuckObstacle(other, obstacle);
             }
-            //else if (other.gameObject.TryGetComponent(out FinishReward finishReward))
-            //{
-            //    SuckReward(finishReward);
-            //}
         }
     }
 

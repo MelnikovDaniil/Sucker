@@ -44,3 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39395d601524f034390e102d69ef5db5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathColliderSize: {x: 40, y: 3, z: 3}
+  deathColliderOffset: {x: 0, y: -10, z: 0}
