@@ -13,6 +13,7 @@ public class Sucker : MonoBehaviour
     public event Action OnDeath;
     public event Action OnUnSuckTry;
     public Vector3 springConnectionPosition;
+    public ParticleSystem suckParticles;
 
     [Space]
     public Vector3 suckerPosition;
@@ -28,11 +29,13 @@ public class Sucker : MonoBehaviour
     [NonSerialized]
     public Rigidbody rigidbody;
 
+    private Animator animator;
     private FixedJoint connectionPlace;
 
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -47,6 +50,7 @@ public class Sucker : MonoBehaviour
         {
             if (ableToUnSuck)
             {
+                animator.SetTrigger("unsuck");
                 StartCoroutine(UnSuckRoutine());
                 isSucked = false;
                 Destroy(connectionPlace.gameObject);
@@ -72,7 +76,7 @@ public class Sucker : MonoBehaviour
             && other.attachedRigidbody != null
             && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
         {
-            SuckObstacle(other, obstacle);
+            StartCoroutine(SuckObstacleRoutine(other, obstacle));
         }
     }
 
@@ -87,48 +91,12 @@ public class Sucker : MonoBehaviour
             if (other.attachedRigidbody != null
                 && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
             {
-                SuckObstacle(other, obstacle);
+                StartCoroutine(SuckObstacleRoutine(other, obstacle));
             }
         }
     }
 
-    //private void SuckReward(FinishReward finishReward)
-    //{
-    //    var leftAngle = CalculateRewardRotationAngle(false) ?? float.MaxValue;
-    //    var rightAngle = CalculateRewardRotationAngle(true) ?? float.MaxValue;
-
-    //    var rotationAngle = Mathf.Abs(leftAngle) >= Mathf.Abs(rightAngle) ? rightAngle : leftAngle;
-
-    //    if (rotationAngle != float.MaxValue)
-    //    {
-    //        blocked = true;
-    //        isSucked = true;
-
-    //        var previousSuckPositions = GetSuckerPositions();
-    //        var nextRotationPositions = GetSuckerPositions(rotationAngle);
-    //        var previousMiddleSuckPoint = Vector3.Lerp(previousSuckPositions.left, previousSuckPositions.right, 0.5f);
-    //        var nextMiddleSuckPoint = Vector3.Lerp(nextRotationPositions.left, nextRotationPositions.right, 0.5f);
-    //        var closiestPoint = Physics.ClosestPoint(nextMiddleSuckPoint, collider, collider.transform.position, collider.transform.rotation);
-    //        var moveOffset = closiestPoint - previousMiddleSuckPoint;
-    //        transform.rotation = transform.rotation * Quaternion.Euler(0, 0, rotationAngle);
-    //        transform.position += moveOffset;
-
-    //        connectionPlace = new GameObject($"ConnectionPlace of {this.name}", typeof(FixedJoint)).GetComponent<FixedJoint>();
-    //        var placeRigidbody = connectionPlace.GetComponent<Rigidbody>();
-    //        placeRigidbody.isKinematic = true;
-    //        placeRigidbody.constraints = rigidbody.constraints;
-    //        connectionPlace.transform.parent = obstacle.transform;
-    //        connectionPlace.transform.position = transform.position;
-    //        connectionPlace.transform.localRotation = Quaternion.identity;
-    //        connectionPlace.connectedBody = rigidbody;
-    //        //rigidbody.isKinematic = true;
-
-    //        obstacle.Connect();
-    //        OnSuck?.Invoke(obstacle);
-    //    }
-    //}
-
-    private void SuckObstacle(Collider collider, Obstacle obstacle)
+    private IEnumerator SuckObstacleRoutine(Collider collider, Obstacle obstacle)
     {
         var leftAngle = CalculateRotationAngle(collider, false) ?? float.MaxValue;
         var rightAngle = CalculateRotationAngle(collider, true) ?? float.MaxValue;
@@ -148,7 +116,9 @@ public class Sucker : MonoBehaviour
             var moveOffset = closiestPoint - previousMiddleSuckPoint;
             transform.rotation = transform.rotation * Quaternion.Euler(0, 0, rotationAngle);
             transform.position += moveOffset;
+            rigidbody.velocity = Vector3.zero;
 
+            yield return new WaitForEndOfFrame();
             connectionPlace = new GameObject($"ConnectionPlace of {this.name}", typeof(FixedJoint)).GetComponent<FixedJoint>();
             var placeRigidbody = connectionPlace.GetComponent<Rigidbody>();
             placeRigidbody.isKinematic = true;
@@ -159,6 +129,8 @@ public class Sucker : MonoBehaviour
             connectionPlace.connectedBody = rigidbody;
             //rigidbody.isKinematic = true;
 
+            animator.SetTrigger("suck");
+            suckParticles.Play();
             obstacle.Connect();
             OnSuck?.Invoke(obstacle);
         }

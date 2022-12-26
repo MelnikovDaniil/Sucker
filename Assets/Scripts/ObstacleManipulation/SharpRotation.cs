@@ -11,7 +11,7 @@ public class SharpRotation : MonoBehaviour
     public List<float> turnAnglePatten;
 
     private Queue<float> turnAngleQueue = new Queue<float>();
-    private float currentPauseDuration;
+    public float currentPauseDuration;
     private Quaternion? targetRotation;
 
     private void Start()
@@ -29,15 +29,19 @@ public class SharpRotation : MonoBehaviour
         if (targetRotation.HasValue && currentPauseDuration <= 0)
         {
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation.Value, rotationSpeed * Time.deltaTime);
-            if (transform.rotation == targetRotation)
+            if (Quaternion.Angle(transform.rotation, targetRotation.Value) < 2f)
             {
+                targetRotation = null;
                 currentPauseDuration = pauseDuration;
             }
         }
         else if (!moveOnSuck)
         {
             currentPauseDuration -= Time.deltaTime;
-            targetRotation = Quaternion.Euler(0, 0, GetNextAngle());
+            if (currentPauseDuration <= 0)
+            {
+                targetRotation = Quaternion.Euler(0, 0, GetNextAngle());
+            }
         }
     }
 

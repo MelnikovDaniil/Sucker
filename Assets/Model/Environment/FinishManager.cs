@@ -6,6 +6,7 @@ public class FinishManager : MonoBehaviour
 {
     public static FinishManager Instance;
     public RewardLine rewardLine;
+    public ParticleSystem particles;
     public Vector3 highestPoint;
     public float resultsAfterTime;
 
@@ -20,6 +21,7 @@ public class FinishManager : MonoBehaviour
     private void Finishing()
     {
         isFinished = true;
+        particles.Play();
         GameManager.Instance.DisableDeathCollider();
         SuckerController.Instance.sucker1.OnSuck += rewardLine.SuckLine;
         SuckerController.Instance.sucker2.OnSuck += rewardLine.SuckLine;

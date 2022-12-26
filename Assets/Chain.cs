@@ -1,3 +1,4 @@
+using Obi;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,8 @@ public class Chain : MonoBehaviour
 {
     public Sucker sucker1;
     public Sucker sucker2;
+
+    public ObiRod obiRod;
 
     [Space]
     [Range(0, 1f)]
@@ -50,6 +53,7 @@ public class Chain : MonoBehaviour
         currentDecompressionTime = decompressionTime;
         currentElementAngle = maxElementAngle;
         GenerateChain();
+        PinRodToChain();
         rotationElements.Add((sucker1.transform, sucker1.transform.localEulerAngles));
         rotationElements.AddRange(
             chainElements.Select(x => (x.transform, x.transform.localEulerAngles)));
@@ -57,6 +61,36 @@ public class Chain : MonoBehaviour
         //Time.timeScale = 0;
     }
 
+    private void PinRodToChain()
+    {
+        var fullChainElement = new List<Transform>();
+        fullChainElement.Add(sucker1.transform.GetChild(0));
+        fullChainElement.AddRange(chainElements.Select(x => x.transform));
+        fullChainElement.Add(sucker2.transform.GetChild(0));
+        fullChainElement.Reverse();
+        var pinCount = fullChainElement.Count;
+        var obiRodPoints = obiRod.elements;
+
+        for (int i = 0; i < pinCount; i++)
+        {
+            var particleAttachment = obiRod.gameObject.AddComponent<ObiParticleAttachment>();
+            var chainElementIndex = i / (pinCount - 1f) * obiRodPoints.Count;
+            particleAttachment.attachmentType = ObiParticleAttachment.AttachmentType.Dynamic;
+            particleAttachment.target = fullChainElement[i].transform;
+            particleAttachment.particleGroup = obiRod.blueprint.groups[Mathf.RoundToInt(chainElementIndex)];
+
+        }
+
+        var additionalParticleAttachment1 = obiRod.gameObject.AddComponent<ObiParticleAttachment>();
+        additionalParticleAttachment1.attachmentType = ObiParticleAttachment.AttachmentType.Dynamic;
+        additionalParticleAttachment1.target = fullChainElement[0].transform;
+        additionalParticleAttachment1.particleGroup = obiRod.blueprint.groups[1];
+
+        var additionalParticleAttachment2 = obiRod.gameObject.AddComponent<ObiParticleAttachment>();
+        additionalParticleAttachment2.attachmentType = ObiParticleAttachment.AttachmentType.Dynamic;
+        additionalParticleAttachment2.target = fullChainElement[pinCount - 1].transform;
+        additionalParticleAttachment2.particleGroup = obiRod.blueprint.groups[obiRodPoints.Count - 2];
+    }
 
     public void Update()
     {
@@ -67,14 +101,14 @@ public class Chain : MonoBehaviour
 
         if (Time.timeScale > 0)
         {
-            if (compressionProgress > compressionLimit && Input.GetKey(KeyCode.Space))
+            if (compressionProgress > compressionLimit && (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0)))
             {
                 compressionProgress = Mathf.Clamp(compressionProgress, compressionLimit, 1.00f);
                 compressionProgress -= compressionSpeed * Time.deltaTime;
                 compressionProgress = Mathf.Clamp(compressionProgress, compressionLimit, 1.00f);
             }
 
-            if (Input.GetKeyUp(KeyCode.Space))
+            if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Mouse0))
             {
                 currentDecompressionTime = (compressionProgress - compressionLimit) / (1 - compressionLimit) * decompressionTime;
             }
@@ -109,7 +143,7 @@ public class Chain : MonoBehaviour
                 }
             }
             LimitRotation();
-            //LimitDistance();
+            LimitDistance();
         }
     }
 
@@ -127,6 +161,7 @@ public class Chain : MonoBehaviour
             var rigidbody = newElement.gameObject.AddComponent<Rigidbody>();
             var spring = newElement.gameObject.AddComponent<SpringJoint>();
             var collider = newElement.gameObject.AddComponent<CapsuleCollider>();
+            var obiCollider = newElement.gameObject.AddComponent<ObiCollider>();
 
             SetupSpring(spring);
 
@@ -139,6 +174,8 @@ public class Chain : MonoBehaviour
             collider.direction = 0; //x-axis orientation
             collider.radius = elementRadius;
             collider.height = elementWidth;
+
+            obiCollider.Filter = 0;
 
             newElement.capsuleCollider = collider;
             newElement.springJoint = spring;
@@ -193,19 +230,19 @@ public class Chain : MonoBehaviour
         {
             currentRotationElements.Reverse();
         }
-        for (int i = 0; i < rotationElements.Count - 1; i++)
+        for (int i = 0; i < currentRotationElements.Count - 1; i++)
         {
             var distanceBonus = 0f;
-            if (i == 0 || i == rotationElements.Count - 2)
+            if (i == 0 || i == currentRotationElements.Count - 2)
             {
-                distanceBonus = 1.5f;
+                distanceBonus = 1.2f;
             }
-            currentElementPosition = rotationElements[i].transform.position;
-            nextElementPosition = rotationElements[i + 1].transform.position;
+            currentElementPosition = currentRotationElements[i].transform.position;
+            nextElementPosition = currentRotationElements[i + 1].transform.position;
             nextElementDirection = nextElementPosition - currentElementPosition;
             nextElementDistance = Mathf.Clamp(nextElementDirection.magnitude, 0, maxElementDistance * compressionProgress + distanceBonus);
 
-            rotationElements[i + 1].transform.position = currentElementPosition + nextElementDirection.normalized * nextElementDistance;
+            currentRotationElements[i + 1].transform.position = currentElementPosition + nextElementDirection.normalized * nextElementDistance;
         }
     }
 
