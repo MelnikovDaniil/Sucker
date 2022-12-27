@@ -347,13 +347,13 @@ MonoBehaviour:
     interpolation: 0
     gravity: {x: 0, y: -9.81, z: 0}
     damping: 0
-    maxAnisotropy: 3
+    maxAnisotropy: 1
     sleepThreshold: 0.0005
-    collisionMargin: 0.02
-    maxDepenetration: 10
+    collisionMargin: 0
+    maxDepenetration: 0.1
     continuousCollisionDetection: 0
     shockPropagation: 0
-    surfaceCollisionIterations: 8
+    surfaceCollisionIterations: 1
     surfaceCollisionTolerance: 0
   gravity: {x: 0, y: 0, z: 0}
   gravitySpace: 1
@@ -464,6 +464,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3435111058139835657}
   - component: {fileID: 3435111058139835656}
+  - component: {fileID: 5244943997090961202}
   m_Layer: 0
   m_Name: Chain
   m_TagString: Untagged
@@ -516,6 +517,23 @@ MonoBehaviour:
   elementWidth: 1
   currentElementAngle: 0
   compressionProgress: 0
+--- !u!114 &5244943997090961202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3435111058139835663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40924cff6bfb0834b8e76cb45a8bebd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trajectoryElementPrefab: {fileID: 4425496217507107483, guid: 92823e19f9e838c468def3bb20a7b1b8, type: 3}
+  trajectoryLength: 5
+  elementsCount: 5
+  elementSpeed: 2
+  decrisingElementsAfter: 0.8
 --- !u!1001 &3435111057556809543
 PrefabInstance:
   m_ObjectHideFlags: 0

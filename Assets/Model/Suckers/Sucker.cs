@@ -124,9 +124,11 @@ public class Sucker : MonoBehaviour
             placeRigidbody.isKinematic = true;
             placeRigidbody.constraints = rigidbody.constraints;
             connectionPlace.transform.parent = obstacle.transform;
+            connectionPlace.transform.localScale = Vector3.one;
             connectionPlace.transform.position = transform.position;
             connectionPlace.transform.localRotation = Quaternion.identity;
             connectionPlace.connectedBody = rigidbody;
+
             //rigidbody.isKinematic = true;
 
             animator.SetTrigger("suck");

@@ -249,7 +249,7 @@ PlayerSettings:
   AndroidTargetDevices: 1
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: F:/PlangerJump.keystore
+  AndroidKeystoreName: D:/flashcard/PlangerJump.keystore
   AndroidKeyaliasName: plungerjump
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0

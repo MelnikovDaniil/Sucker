@@ -75,19 +75,19 @@ public class Chain : MonoBehaviour
         {
             var particleAttachment = obiRod.gameObject.AddComponent<ObiParticleAttachment>();
             var chainElementIndex = i / (pinCount - 1f) * obiRodPoints.Count;
-            particleAttachment.attachmentType = ObiParticleAttachment.AttachmentType.Dynamic;
+            particleAttachment.attachmentType = ObiParticleAttachment.AttachmentType.Static;
             particleAttachment.target = fullChainElement[i].transform;
             particleAttachment.particleGroup = obiRod.blueprint.groups[Mathf.RoundToInt(chainElementIndex)];
 
         }
 
         var additionalParticleAttachment1 = obiRod.gameObject.AddComponent<ObiParticleAttachment>();
-        additionalParticleAttachment1.attachmentType = ObiParticleAttachment.AttachmentType.Dynamic;
+        additionalParticleAttachment1.attachmentType = ObiParticleAttachment.AttachmentType.Static;
         additionalParticleAttachment1.target = fullChainElement[0].transform;
         additionalParticleAttachment1.particleGroup = obiRod.blueprint.groups[1];
 
         var additionalParticleAttachment2 = obiRod.gameObject.AddComponent<ObiParticleAttachment>();
-        additionalParticleAttachment2.attachmentType = ObiParticleAttachment.AttachmentType.Dynamic;
+        additionalParticleAttachment2.attachmentType = ObiParticleAttachment.AttachmentType.Static;
         additionalParticleAttachment2.target = fullChainElement[pinCount - 1].transform;
         additionalParticleAttachment2.particleGroup = obiRod.blueprint.groups[obiRodPoints.Count - 2];
     }
@@ -144,6 +144,7 @@ public class Chain : MonoBehaviour
             }
             LimitRotation();
             LimitDistance();
+            //LimitPosition();
         }
     }
 
@@ -221,6 +222,14 @@ public class Chain : MonoBehaviour
         spring.maxDistance = 0f;
         spring.enableCollision = true;
         spring.autoConfigureConnectedAnchor = false;
+    }
+
+    private void LimitPosition()
+    {
+        foreach (var element in rotationElements)
+        {
+            element.transform.position = new Vector3(element.transform.position.x, element.transform.position.y, 0);
+        }
     }
 
     private void LimitDistance()
