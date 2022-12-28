@@ -23,62 +23,66 @@ public class Trajectory : MonoBehaviour
     {
         chain = GetComponent<Chain>();
         GenerateTrajectory();
+        currentCompressionTime = chain.compressionTime;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space) 
-            && (chain.sucker1.isSucked || chain.sucker2.isSucked))
+        if (Time.timeScale > 0)
         {
-            trajectory.SetActive(true);
-            currentCompressionTime = chain.compressionTime;
-        }
-
-        if ((Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space)
             && (chain.sucker1.isSucked || chain.sucker2.isSucked))
-        {
-            if (currentCompressionTime > 0)
             {
-                currentCompressionTime -= Time.deltaTime;
-                coof = 1f - (currentCompressionTime / chain.compressionTime);
-                distanceBetweenElements = coof * trajectoryLength / elementsCount;
-                for (int i = 1; i < elementsCount; i++)
-                {
-                    var previosElementPosition = trajectoryElements[i - 1].localPosition;
-                    trajectoryElements[i].localPosition = previosElementPosition + Vector3.up * distanceBetweenElements;
-                }
+                trajectory.SetActive(true);
+                currentCompressionTime = chain.compressionTime;
             }
 
-            var fromSucker = chain.sucker1.isSucked ? chain.sucker1 : chain.sucker2;
-            var toSucker = fromSucker == chain.sucker1 ? chain.sucker2 : chain.sucker1;
-            trajectory.transform.position = fromSucker.transform.position;
-            var direction = toSucker.transform.position - fromSucker.transform.position;
-            trajectory.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
-            
-
-            foreach (var element in trajectoryElements)
+            if ((Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Space))
+                && (chain.sucker1.isSucked || chain.sucker2.isSucked))
             {
-                var currentLenght = coof * trajectoryLength;
-                var decreseAfterLenght = currentLenght * decrisingElementsAfter;
-                var decreseLenght = currentLenght - decreseAfterLenght;
-                element.localPosition += Vector3.up * elementSpeed * Time.deltaTime;
-                element.localPosition = new Vector3(0, element.localPosition.y % currentLenght, 0);
-                if (element.localPosition.y - decreseAfterLenght > 0)
+                if (currentCompressionTime > 0)
                 {
-                    element.localScale = Vector3.one * (1f - (element.localPosition.y - decreseAfterLenght) / decreseLenght);
+                    currentCompressionTime -= Time.deltaTime;
+                    coof = 1f - (currentCompressionTime / chain.compressionTime);
+                    distanceBetweenElements = coof * trajectoryLength / elementsCount;
+                    for (int i = 1; i < elementsCount; i++)
+                    {
+                        var previosElementPosition = trajectoryElements[i - 1].localPosition;
+                        trajectoryElements[i].localPosition = previosElementPosition + Vector3.up * distanceBetweenElements;
+                    }
                 }
-                else
+
+                var fromSucker = chain.sucker1.isSucked ? chain.sucker1 : chain.sucker2;
+                var toSucker = fromSucker == chain.sucker1 ? chain.sucker2 : chain.sucker1;
+                trajectory.transform.position = fromSucker.transform.position;
+                var direction = toSucker.transform.position - fromSucker.transform.position;
+                trajectory.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+
+
+                foreach (var element in trajectoryElements)
                 {
-                    element.localScale = Vector3.one;
+                    var currentLenght = coof * trajectoryLength;
+                    var decreseAfterLenght = currentLenght * decrisingElementsAfter;
+                    var decreseLenght = currentLenght - decreseAfterLenght;
+                    element.localPosition += Vector3.up * elementSpeed * Time.deltaTime;
+                    element.localPosition = new Vector3(0, element.localPosition.y % currentLenght, 0);
+                    if (element.localPosition.y - decreseAfterLenght > 0)
+                    {
+                        element.localScale = Vector3.one * (1f - (element.localPosition.y - decreseAfterLenght) / decreseLenght);
+                    }
+                    else
+                    {
+                        element.localScale = Vector3.one;
+                    }
                 }
+
             }
 
-        }
 
-
-        if (Input.GetKeyUp(KeyCode.Mouse0) || Input.GetKeyUp(KeyCode.Space))
-        {
-            trajectory.SetActive(false);
+            if (Input.GetKeyUp(KeyCode.Mouse0) || Input.GetKeyUp(KeyCode.Space))
+            {
+                trajectory.SetActive(false);
+            }
         }
     }
 

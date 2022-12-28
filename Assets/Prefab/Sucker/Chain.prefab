@@ -530,10 +530,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trajectoryElementPrefab: {fileID: 4425496217507107483, guid: 92823e19f9e838c468def3bb20a7b1b8, type: 3}
-  trajectoryLength: 5
-  elementsCount: 5
+  trajectoryLength: 6
+  elementsCount: 7
   elementSpeed: 2
-  decrisingElementsAfter: 0.8
+  decrisingElementsAfter: 0.9
 --- !u!1001 &3435111057556809543
 PrefabInstance:
   m_ObjectHideFlags: 0
