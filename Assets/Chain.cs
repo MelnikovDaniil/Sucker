@@ -101,7 +101,40 @@ public class Chain : MonoBehaviour
         additionalParticleAttachment2.particleGroup = obiRod.blueprint.groups[obiRodPoints.Count - 2];
     }
 
-    public void Update()
+    private void FixedUpdate()
+    {
+        if (Time.timeScale > 0)
+        {
+            if (compressionProgress <= 1)
+            {
+                currentElementAngle = (compressionProgress - compressionLimit) / (1 - compressionLimit) * maxElementAngle;
+                chainElements.ForEach(x =>
+                {
+                    x.capsuleCollider.radius = compressionProgress * elementRadius;
+                    if (x.springJoint != null)
+                    {
+                        x.springJoint.anchor = x.springJoint.anchor.normalized * x.capsuleCollider.radius;
+                        x.springJoint.connectedAnchor = x.springJoint.connectedAnchor.normalized * x.capsuleCollider.radius;
+                    }
+
+                    if (x.suckerJoint != null)
+                    {
+                        x.suckerJoint.anchor = x.suckerJoint.anchor.normalized * x.capsuleCollider.radius;
+                    }
+                });
+
+                if (compressionProgress == 1)
+                {
+                    compressionProgress += 0.1f;
+                }
+            }
+        }
+
+        LimitRotation();
+        LimitDistance();
+    }
+
+    public void LateUpdate()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
@@ -139,32 +172,6 @@ public class Chain : MonoBehaviour
                 currentDecompressionTime += Time.deltaTime;
                 compressionProgress = Mathf.Clamp(currentDecompressionTime / decompressionTime, compressionLimit, 1.00f);
             }
-
-            if (compressionProgress <= 1)
-            {
-                currentElementAngle = (compressionProgress - compressionLimit) / (1 - compressionLimit) * maxElementAngle;
-                chainElements.ForEach(x =>
-                {
-                    x.capsuleCollider.radius = compressionProgress * elementRadius;
-                    if (x.springJoint != null)
-                    {
-                        x.springJoint.anchor = x.springJoint.anchor.normalized * x.capsuleCollider.radius;
-                        x.springJoint.connectedAnchor = x.springJoint.connectedAnchor.normalized * x.capsuleCollider.radius;
-                    }
-
-                    if (x.suckerJoint != null)
-                    {
-                        x.suckerJoint.anchor = x.suckerJoint.anchor.normalized * x.capsuleCollider.radius;
-                    }
-                });
-
-                if (compressionProgress == 1)
-                {
-                    compressionProgress += 0.1f;
-                }
-            }
-            LimitRotation();
-            LimitDistance();
             //LimitPosition();
         }
     }

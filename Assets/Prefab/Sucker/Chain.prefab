@@ -508,7 +508,7 @@ MonoBehaviour:
   obiRod: {fileID: 3435111057578283789}
   compressionLimit: 0.2
   compressionTime: 0.5
-  decompressionTime: 0.05
+  decompressionTime: 0.01
   maxElementAngle: 5
   maxElementDistance: 0.7
   springLenth: 2
