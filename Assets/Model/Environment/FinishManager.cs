@@ -10,6 +10,10 @@ public class FinishManager : MonoBehaviour
     public Vector3 highestPoint;
     public float resultsAfterTime;
 
+    [Space]
+    public AudioClip petardSound;
+    public AudioClip finishSound;
+
     private bool isFinished;
     private Coroutine resultsRoutine;
 
@@ -21,6 +25,8 @@ public class FinishManager : MonoBehaviour
     private void Finishing()
     {
         isFinished = true;
+        SoundManager.PlaySound(petardSound);
+        SoundManager.PlaySound(finishSound);
         particles.Play();
         GameManager.Instance.DisableDeathCollider();
         SuckerController.Instance.sucker1.OnSuck += rewardLine.SuckLine;

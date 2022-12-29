@@ -465,6 +465,7 @@ GameObject:
   - component: {fileID: 3435111058139835657}
   - component: {fileID: 3435111058139835656}
   - component: {fileID: 5244943997090961202}
+  - component: {fileID: 7582646450941334939}
   m_Layer: 0
   m_Name: Chain
   m_TagString: Untagged
@@ -534,6 +535,34 @@ MonoBehaviour:
   elementsCount: 7
   elementSpeed: 2
   decrisingElementsAfter: 0.9
+--- !u!114 &7582646450941334939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3435111058139835663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2720c7cb2a3a18e49becd327c7dbb98a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundGroups:
+  - groupName: Spring
+    audioClips:
+    - {fileID: 8300000, guid: 91fa3887ae212aa4abe40ba158928369, type: 3}
+    - {fileID: 8300000, guid: 8ff134f7544ba684690e9a8bcfffab51, type: 3}
+    - {fileID: 8300000, guid: 9f60e5be815e69349a83bc0fe1071bdd, type: 3}
+    - {fileID: 8300000, guid: a809a14b2e213db4d99a5b8ff7680514, type: 3}
+    - {fileID: 8300000, guid: 20a4cfa500962564481703b561977557, type: 3}
+  - groupName: Boing
+    audioClips:
+    - {fileID: 8300000, guid: 33243f7956757d74f8277869f5d55942, type: 3}
+    - {fileID: 8300000, guid: 0a31f9d61d688b240a35e8d78916bf9f, type: 3}
+    - {fileID: 8300000, guid: a2d64ba51eddc0c469eee071ba515a1f, type: 3}
+    - {fileID: 8300000, guid: 33eda799b529cc6468b6f8e2e71faa64, type: 3}
+    - {fileID: 8300000, guid: 0234d72bce38efd4cb78ac10c4a0d44f, type: 3}
+    - {fileID: 8300000, guid: da7af1b9ff4bce347b49ef933abd2077, type: 3}
 --- !u!1001 &3435111057556809543
 PrefabInstance:
   m_ObjectHideFlags: 0

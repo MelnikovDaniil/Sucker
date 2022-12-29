@@ -28,6 +28,8 @@ public class Chain : MonoBehaviour
     public float elementRadius = 0.25f;
     public float elementWidth = 1;
 
+    private SoundGroupComponent soundGroupComponent;
+
     private List<ChainElement> chainElements = new List<ChainElement>();
     private List<(Transform transform, Vector3 startEulerAngles)> rotationElements = new List<(Transform, Vector3)>();
     private List<(Transform transform, Vector3 startEulerAngles)> currentRotationElements;
@@ -45,6 +47,13 @@ public class Chain : MonoBehaviour
     private Vector3 nextElementPosition;
     private Vector3 nextElementDirection;
     private float nextElementDistance;
+
+    private SMSound currentSpringSound;
+
+    private void Awake()
+    {
+        soundGroupComponent = GetComponent<SoundGroupComponent>();
+    }
 
     private void Start()
     {
@@ -101,6 +110,14 @@ public class Chain : MonoBehaviour
 
         if (Time.timeScale > 0)
         {
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                var randomClip = soundGroupComponent.soundGroups.FirstOrDefault(x => x.groupName == "Spring")
+                    .audioClips.GetRandom();
+                currentSpringSound = SoundManager.PlaySound(randomClip)
+                    .SetVolume(0.4f);
+            }
+
             if (compressionProgress > compressionLimit && (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0)))
             {
                 compressionProgress = Mathf.Clamp(compressionProgress, compressionLimit, 1.00f);
@@ -110,6 +127,10 @@ public class Chain : MonoBehaviour
 
             if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Mouse0))
             {
+                currentSpringSound?.Stop();
+                var randomClip = soundGroupComponent.soundGroups.FirstOrDefault(x => x.groupName == "Boing")
+                    .audioClips.GetRandom();
+                SoundManager.PlaySound(randomClip).SetVolume(0.3f);
                 currentDecompressionTime = (compressionProgress - compressionLimit) / (1 - compressionLimit) * decompressionTime;
             }
 

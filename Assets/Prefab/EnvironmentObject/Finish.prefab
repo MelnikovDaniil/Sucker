@@ -4936,6 +4936,8 @@ MonoBehaviour:
   particles: {fileID: 6621635433445382615}
   highestPoint: {x: 0, y: 7, z: 0}
   resultsAfterTime: 1.5
+  petardSound: {fileID: 8300000, guid: d944bac9cf40b90499250f509ec7d097, type: 3}
+  finishSound: {fileID: 8300000, guid: 9183f1a34b4cb93489369bc62877c506, type: 3}
 --- !u!65 &615385212662414657
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 1567354536283926726}
   - component: {fileID: 4845468097232001223}
   - component: {fileID: 4805072719215686819}
+  - component: {fileID: 577477099081660864}
   m_Layer: 3
   m_Name: SuckerSlot
   m_TagString: Untagged
@@ -212,6 +213,32 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &577477099081660864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1991717143087440252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2720c7cb2a3a18e49becd327c7dbb98a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundGroups:
+  - groupName: Suck
+    audioClips:
+    - {fileID: 8300000, guid: 144474542cf13694bb195742bc106459, type: 3}
+    - {fileID: 8300000, guid: 1abb37b41fefeed4897daea65dddcac8, type: 3}
+    - {fileID: 8300000, guid: 5718a8a1b7a7edd48880b87d331f67b6, type: 3}
+    - {fileID: 8300000, guid: 57ef6e623d1f9bf4aa8dc035f334127e, type: 3}
+  - groupName: UnSuck
+    audioClips:
+    - {fileID: 8300000, guid: 08bcf0252e11f3a458e669e656169063, type: 3}
+    - {fileID: 8300000, guid: b6c4868bfeeafee43b1979a691d0850b, type: 3}
+    - {fileID: 8300000, guid: d8c02c9809b1ff9498d1cc1bb39d3b3f, type: 3}
+    - {fileID: 8300000, guid: 38052d8b4be2fdc4ca7e613174989192, type: 3}
+    - {fileID: 8300000, guid: 5d868e97ffc27bb4786389f24b9fe3e2, type: 3}
 --- !u!1 &3525136385114887780
 GameObject:
   m_ObjectHideFlags: 0
