@@ -57,7 +57,7 @@ public class Sucker : MonoBehaviour
                 animator.SetTrigger("unsuck");
                 StartCoroutine(UnSuckRoutine());
                 isSucked = false;
-                Destroy(connectionPlace.gameObject);
+                Destroy(connectionPlace);
                 connectionPlace = null;
                 OnUnSuck?.Invoke();
             }
@@ -74,15 +74,21 @@ public class Sucker : MonoBehaviour
         ableToSuck = true;
     }
 
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        if (ableToSuck && !isSucked 
-            && other.attachedRigidbody != null
-            && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
-        {
-            StartCoroutine(SuckObstacleRoutine(other, obstacle));
-        }
-    }
+    //private void OnTriggerStay2D(Collider2D other)
+    //{
+    //    if (ableToSuck && !isSucked 
+    //        && other.attachedRigidbody != null)
+    //    {
+    //        if (other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
+    //        {
+    //            StartCoroutine(SuckObstacleRoutine(other, obstacle));
+    //        }
+    //        else
+    //        {
+                
+    //        }
+    //    }
+    //}
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -90,14 +96,30 @@ public class Sucker : MonoBehaviour
         {
             OnDeath?.Invoke();
         }
-        else if (ableToSuck && !isSucked)
+        else if (ableToSuck && !isSucked
+            && other.attachedRigidbody?.gameObject != null)
         {
-            if (other.attachedRigidbody != null
-                && other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
+            if (other.attachedRigidbody.gameObject.TryGetComponent(out Block block))
+            {
+                SuckBlock(block);
+            }
+            else if (other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
             {
                 StartCoroutine(SuckObstacleRoutine(other, obstacle));
             }
         }
+    }
+
+    private void SuckBlock(Block block)
+    {
+        ableToSuck = false;
+        isSucked = true;
+        connectionPlace = block.gameObject.AddComponent<FixedJoint2D>();
+        var placeRigidbody = connectionPlace.GetComponent<Rigidbody2D>();
+        connectionPlace.connectedBody = rigidbody;
+        connectionPlace.autoConfigureConnectedAnchor = false;
+        animator.SetTrigger("suck");
+        suckParticles.Play();
     }
 
     private IEnumerator SuckObstacleRoutine(Collider2D collider, Obstacle obstacle)

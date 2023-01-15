@@ -137,7 +137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   springConnectionPosition: {x: 0, y: -0.95, z: 0}
   suckParticles: {fileID: 4845238619209752623}
-  suckerPosition: {x: 0.6, y: 0.2, z: 0}
+  suckerPosition: {x: 0.6, y: 0.15, z: 0}
   maxRotationDuringSuck: 60
 --- !u!95 &4805072719215686819
 Animator:
@@ -233,7 +233,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.7, y: 0.1}
-  m_Size: {x: 0.5, y: 0.4}
+  m_Size: {x: 0.5, y: 0.25}
   m_Direction: 1
 --- !u!70 &5092489731204809224
 CapsuleCollider2D:
@@ -249,7 +249,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.7, y: 0.1}
-  m_Size: {x: 0.5, y: 0.4}
+  m_Size: {x: 0.5, y: 0.25}
   m_Direction: 1
 --- !u!1 &3525136385114887780
 GameObject:
