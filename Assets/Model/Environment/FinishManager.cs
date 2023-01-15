@@ -47,7 +47,7 @@ public class FinishManager : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (!isFinished && other.gameObject.layer == LayerMask.NameToLayer("Sucker"))
         {
