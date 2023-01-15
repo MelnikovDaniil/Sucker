@@ -343,7 +343,7 @@ MonoBehaviour:
   simulateWhenInvisible: 0
   m_Backend: 1
   parameters:
-    mode: 0
+    mode: 1
     interpolation: 0
     gravity: {x: 0, y: -9.81, z: 0}
     damping: 0
@@ -463,9 +463,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3435111058139835657}
-  - component: {fileID: 3435111058139835656}
   - component: {fileID: 5244943997090961202}
   - component: {fileID: 7582646450941334939}
+  - component: {fileID: 5609225335046966095}
   m_Layer: 0
   m_Name: Chain
   m_TagString: Untagged
@@ -491,33 +491,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3435111058139835656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3435111058139835663}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 947aa994317ec04458fab2e5356d5c25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sucker1: {fileID: 3751489139111413302}
-  sucker2: {fileID: 3751489138864939027}
-  obiRod: {fileID: 3435111057578283789}
-  compressionLimit: 0.2
-  compressionTime: 0.5
-  decompressionTime: 0.01
-  maxElementAngle: 5
-  maxElementDistance: 0.7
-  springLenth: 2
-  springPower: 10000
-  chaintElementPrefab: {fileID: 848783400877210788, guid: 199f706a154bb0948b23d5ea18d91018, type: 3}
-  elementRadius: 0.25
-  elementWidth: 1
-  currentElementAngle: 0
-  compressionProgress: 0
 --- !u!114 &5244943997090961202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -563,6 +536,31 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 33eda799b529cc6468b6f8e2e71faa64, type: 3}
     - {fileID: 8300000, guid: 0234d72bce38efd4cb78ac10c4a0d44f, type: 3}
     - {fileID: 8300000, guid: da7af1b9ff4bce347b49ef933abd2077, type: 3}
+--- !u!114 &5609225335046966095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3435111058139835663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a16864e0faf46744a87b4905573cfc12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sucker1: {fileID: 3751489139111413302}
+  sucker2: {fileID: 3751489138864939027}
+  obiRod: {fileID: 3435111057578283789}
+  compressionLimit: 0.2
+  compressionTime: 0.5
+  decompressionTime: 0.01
+  maxElementAngle: 5
+  maxElementDistance: 0.7
+  springLenth: 2
+  springPower: 300
+  chaintElementPrefab: {fileID: 41557378508138332, guid: 199f706a154bb0948b23d5ea18d91018, type: 3}
+  elementHeight: 0.5
+  elementWidth: 1
 --- !u!1001 &3435111057556809543
 PrefabInstance:
   m_ObjectHideFlags: 0

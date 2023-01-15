@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class Obstacle : MonoBehaviour
 {
     public event Action OnConnect;
@@ -11,11 +11,11 @@ public class Obstacle : MonoBehaviour
     public float rotationSpeed = 100;
 
     [NonSerialized]
-    public Rigidbody rigidbody;
+    public Rigidbody2D rigidbody;
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rigidbody = GetComponent<Rigidbody2D>();
         rigidbody.isKinematic = true;
         gameObject.layer = LayerMask.NameToLayer("Obstacle");
     }

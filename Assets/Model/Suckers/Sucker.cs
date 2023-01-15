@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody2D))]
 
 public class Sucker : MonoBehaviour
 {
@@ -27,15 +27,17 @@ public class Sucker : MonoBehaviour
     public bool ableToUnSuck;
 
     [NonSerialized]
-    public Rigidbody rigidbody;
+    public Rigidbody2D rigidbody;
 
     private Animator animator;
-    private FixedJoint connectionPlace;
+    private FixedJoint2D connectionPlace;
+    private Transform chain;
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        chain = transform.parent;
     }
 
     private void Start()
@@ -50,6 +52,8 @@ public class Sucker : MonoBehaviour
         {
             if (ableToUnSuck)
             {
+                //transform.parent = chain;
+                //rigidbody.isKinematic = false;
                 animator.SetTrigger("unsuck");
                 StartCoroutine(UnSuckRoutine());
                 isSucked = false;
@@ -70,7 +74,7 @@ public class Sucker : MonoBehaviour
         ableToSuck = true;
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (ableToSuck && !isSucked 
             && other.attachedRigidbody != null
@@ -80,7 +84,7 @@ public class Sucker : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "deathCollider")
         {
@@ -96,7 +100,7 @@ public class Sucker : MonoBehaviour
         }
     }
 
-    private IEnumerator SuckObstacleRoutine(Collider collider, Obstacle obstacle)
+    private IEnumerator SuckObstacleRoutine(Collider2D collider, Obstacle obstacle)
     {
         var leftAngle = CalculateRotationAngle(collider, false) ?? float.MaxValue;
         var rightAngle = CalculateRotationAngle(collider, true) ?? float.MaxValue;
@@ -110,24 +114,32 @@ public class Sucker : MonoBehaviour
 
             var previousSuckPositions = GetSuckerPositions();
             var nextRotationPositions = GetSuckerPositions(rotationAngle);
-            var previousMiddleSuckPoint = Vector3.Lerp(previousSuckPositions.left, previousSuckPositions.right, 0.5f);
-            var nextMiddleSuckPoint = Vector3.Lerp(nextRotationPositions.left, nextRotationPositions.right, 0.5f);
-            var closiestPoint = Physics.ClosestPoint(nextMiddleSuckPoint, collider, collider.transform.position, collider.transform.rotation);
-            var moveOffset = closiestPoint - previousMiddleSuckPoint;
+            var previousMiddleSuckPoint = Vector2.Lerp(previousSuckPositions.left, previousSuckPositions.right, 0.5f);
+            var nextMiddleSuckPoint = Vector2.Lerp(nextRotationPositions.left, nextRotationPositions.right, 0.5f);
+            var closiestPoint = Physics2D.ClosestPoint(nextMiddleSuckPoint, collider);
+            Vector3 moveOffset = closiestPoint - previousMiddleSuckPoint;
             transform.rotation = transform.rotation * Quaternion.Euler(0, 0, rotationAngle);
             transform.position += moveOffset;
             rigidbody.velocity = Vector3.zero;
 
             yield return new WaitForEndOfFrame();
-            connectionPlace = new GameObject($"ConnectionPlace of {this.name}", typeof(FixedJoint)).GetComponent<FixedJoint>();
-            var placeRigidbody = connectionPlace.GetComponent<Rigidbody>();
+            connectionPlace = new GameObject($"ConnectionPlace of {this.name}", typeof(FixedJoint2D)).GetComponent<FixedJoint2D>();
+            var placeRigidbody = connectionPlace.GetComponent<Rigidbody2D>();
+
+            connectionPlace.autoConfigureConnectedAnchor = false;
             placeRigidbody.isKinematic = true;
-            placeRigidbody.constraints = rigidbody.constraints;
+            //connectionPlace.dampingRatio = 1;
+            //connectionPlace.frequency = 300f;
             connectionPlace.transform.parent = obstacle.transform;
-            connectionPlace.transform.localScale = Vector3.one;
-            connectionPlace.transform.position = transform.position;
-            connectionPlace.transform.localRotation = Quaternion.identity;
+            //connectionPlace.transform.localScale = Vector3.one;
+            connectionPlace.transform.position = closiestPoint;
+            //connectionPlace.connectedAnchor = (closiestPoint - (Vector2)transform.position);
             connectionPlace.connectedBody = rigidbody;
+
+            //connectionPlace.transform.localRotation = Quaternion.identity;
+            //connectionPlace.autoConfigureConnectedAnchor = false;
+
+            //transform.parent = connectionPlace.transform;
 
             //rigidbody.isKinematic = true;
 
@@ -156,13 +168,13 @@ public class Sucker : MonoBehaviour
     //    return null;
     //}
 
-    private float? CalculateRotationAngle(Collider searchingCollider, bool isRightPositionPined)
+    private float? CalculateRotationAngle(Collider2D searchingCollider, bool isRightPositionPined)
     {
         var suckerCurrentPositions = GetSuckerPositions();
 
         var pinnedPoint = isRightPositionPined ? suckerCurrentPositions.right : suckerCurrentPositions.left;
         var movingPoint = isRightPositionPined ? suckerCurrentPositions.left : suckerCurrentPositions.right;
-        var colliders = Physics.OverlapSphere(pinnedPoint, 0.1f, LayerMask.GetMask("Obstacle"));
+        var colliders = Physics2D.OverlapCircleAll(pinnedPoint, 0.1f, LayerMask.GetMask("Obstacle"));
         
         if (colliders.Contains(searchingCollider))
         {
@@ -174,10 +186,10 @@ public class Sucker : MonoBehaviour
         return null;
     }
 
-    private float? FindSuckAngle(Collider searchingCollider, Vector3 pinnedPoint, Vector3 differenceVector, float angle = 0)
+    private float? FindSuckAngle(Collider2D searchingCollider, Vector3 pinnedPoint, Vector3 differenceVector, float angle = 0)
     {
         var potentialConnectionPoint = pinnedPoint + Quaternion.Euler(0, 0, angle) * differenceVector;
-        var colliders = Physics.OverlapSphere(potentialConnectionPoint, 0.1f, LayerMask.GetMask("Obstacle"));
+        var colliders = Physics2D.OverlapCircleAll(potentialConnectionPoint, 0.1f, LayerMask.GetMask("Obstacle"));
 
         if (!colliders.Contains(searchingCollider))
         {
@@ -188,8 +200,8 @@ public class Sucker : MonoBehaviour
             return null;
         }
 
-        var closiestToPinnedPoint = Physics.ClosestPoint(pinnedPoint, searchingCollider, searchingCollider.transform.position, searchingCollider.transform.rotation);
-        var closiestToMovingPoint = Physics.ClosestPoint(potentialConnectionPoint, searchingCollider, searchingCollider.transform.position, searchingCollider.transform.rotation);
+        var closiestToPinnedPoint = Physics2D.ClosestPoint(pinnedPoint, searchingCollider);
+        var closiestToMovingPoint = Physics2D.ClosestPoint(potentialConnectionPoint, searchingCollider);
 
         var middlePoint = Vector3.Lerp(closiestToMovingPoint, closiestToPinnedPoint, 0.5f);
         var relativePos = middlePoint - transform.position;

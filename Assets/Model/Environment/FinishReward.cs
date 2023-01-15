@@ -6,13 +6,13 @@ public class FinishReward : MonoBehaviour
     public GameObject chestPrefab;
 
     [NonSerialized]
-    public Rigidbody rigidbody;
+    public Rigidbody2D rigidbody;
 
     private GameObject chest;
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        rigidbody = GetComponent<Rigidbody2D>();
     }
 
     private void Start()

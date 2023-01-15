@@ -25,7 +25,7 @@ public class Chain : MonoBehaviour
 
     [Space]
     public ChainElement chaintElementPrefab;
-    public float elementRadius = 0.25f;
+    public float elementHeight = 0.5f;
     public float elementWidth = 1;
 
     private SoundGroupComponent soundGroupComponent;
@@ -33,10 +33,8 @@ public class Chain : MonoBehaviour
     private List<ChainElement> chainElements = new List<ChainElement>();
     private List<(Transform transform, Vector3 startEulerAngles)> rotationElements = new List<(Transform, Vector3)>();
     private List<(Transform transform, Vector3 startEulerAngles)> currentRotationElements;
-    [SerializeField]
     private float currentElementAngle;
     private float compressionSpeed;
-    [SerializeField]
     private float compressionProgress;
     private float currentDecompressionTime;
 
@@ -110,16 +108,16 @@ public class Chain : MonoBehaviour
                 currentElementAngle = (compressionProgress - compressionLimit) / (1 - compressionLimit) * maxElementAngle;
                 chainElements.ForEach(x =>
                 {
-                    x.capsuleCollider.radius = compressionProgress * elementRadius;
+                    x.capsuleCollider.size = new Vector2(x.capsuleCollider.size.x, compressionProgress * elementHeight);
                     if (x.springJoint != null)
                     {
-                        x.springJoint.anchor = x.springJoint.anchor.normalized * x.capsuleCollider.radius;
-                        x.springJoint.connectedAnchor = x.springJoint.connectedAnchor.normalized * x.capsuleCollider.radius;
+                        x.springJoint.anchor = x.springJoint.anchor.normalized * x.capsuleCollider.size.y / 2f;
+                        x.springJoint.connectedAnchor = x.springJoint.connectedAnchor.normalized * x.capsuleCollider.size.y / 2f;
                     }
 
                     if (x.suckerJoint != null)
                     {
-                        x.suckerJoint.anchor = x.suckerJoint.anchor.normalized * x.capsuleCollider.radius;
+                        x.suckerJoint.anchor = x.suckerJoint.anchor.normalized * x.capsuleCollider.size.y / 2f;
                     }
                 });
 
@@ -178,31 +176,27 @@ public class Chain : MonoBehaviour
 
     private void GenerateChain()
     {
-        var elementsAmount = (int) (springLenth / (elementRadius * 2));
+        var elementsAmount = (int) (springLenth / elementHeight);
         var y = springLenth / 2;
         var startY = y - sucker1.springConnectionPosition.y;
         for (int i = 0; i < elementsAmount; i++)
         {
             var newElement = Instantiate(chaintElementPrefab, transform);
-            y -= elementRadius;
+            y -= elementHeight / 2f;
             newElement.transform.localPosition = new Vector3(0, y, 0);
-            y -= elementRadius;
-            var rigidbody = newElement.gameObject.AddComponent<Rigidbody>();
-            var spring = newElement.gameObject.AddComponent<SpringJoint>();
-            var collider = newElement.gameObject.AddComponent<CapsuleCollider>();
-            var obiCollider = newElement.gameObject.AddComponent<ObiCollider>();
+            y -= elementHeight / 2f;
+            var rigidbody = newElement.gameObject.AddComponent<Rigidbody2D>();
+            var spring = newElement.gameObject.AddComponent<SpringJoint2D>();
+            var collider = newElement.gameObject.AddComponent<CapsuleCollider2D>();
+            var obiCollider = newElement.gameObject.AddComponent<ObiCollider2D>();
 
             SetupSpring(spring);
 
-            rigidbody.angularDrag = 40;
-            rigidbody.constraints = 
-                RigidbodyConstraints.FreezePositionZ
-                | RigidbodyConstraints.FreezeRotationX
-                | RigidbodyConstraints.FreezeRotationY;
+            rigidbody.angularDrag = 180;
+            rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
 
-            collider.direction = 0; //x-axis orientation
-            collider.radius = elementRadius;
-            collider.height = elementWidth;
+            collider.direction = CapsuleDirection2D.Horizontal; //x-axis orientation
+            collider.size = new Vector2(elementWidth, elementHeight);
 
             obiCollider.Filter = 0;
 
@@ -215,15 +209,15 @@ public class Chain : MonoBehaviour
 
             var previosSpring = chainElements[i - 1].springJoint;
             previosSpring.connectedBody = rigidbody;
-            previosSpring.connectedAnchor = Vector3.up * elementRadius;
+            previosSpring.connectedAnchor = Vector3.up * elementHeight / 2f;
         }
 
         sucker1.transform.localPosition = new Vector3(0, startY, 0);
         sucker1.transform.localRotation = Quaternion.identity;
-        var suckerJoint = chainElements[0].gameObject.AddComponent<SpringJoint>();
+        var suckerJoint = chainElements[0].gameObject.AddComponent<SpringJoint2D>();
 
         SetupSpring(suckerJoint);
-        suckerJoint.anchor = Vector3.up * elementRadius;
+        suckerJoint.anchor = Vector3.up * elementHeight / 2f;
         suckerJoint.connectedBody = sucker1.rigidbody;
         suckerJoint.connectedAnchor = sucker1.springConnectionPosition;
 
@@ -237,19 +231,20 @@ public class Chain : MonoBehaviour
         chainElements[elementsAmount - 1].suckerJoint = suckerJoint2;
 
         SetupSpring(suckerJoint2);
-        suckerJoint2.anchor = Vector3.down * elementRadius;
+        suckerJoint2.anchor = Vector3.down * elementHeight / 2f;
         suckerJoint2.connectedBody = sucker2.rigidbody;
         suckerJoint2.connectedAnchor = sucker2.springConnectionPosition;
     }
 
-    private void SetupSpring(SpringJoint spring)
+    private void SetupSpring(SpringJoint2D spring)
     {
-        spring.spring = springPower;
-        spring.anchor = Vector3.down * elementRadius;
-        spring.minDistance = 0f;
-        spring.maxDistance = 0f;
         spring.enableCollision = true;
+        spring.autoConfigureDistance = false;
         spring.autoConfigureConnectedAnchor = false;
+        spring.anchor = Vector3.down * elementHeight / 2f;
+        spring.dampingRatio = 1;
+        spring.distance = 0.025f;
+        spring.frequency = springPower;
     }
 
     private void LimitPosition()

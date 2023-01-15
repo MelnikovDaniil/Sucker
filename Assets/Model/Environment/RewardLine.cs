@@ -8,7 +8,7 @@ public class RewardLine : MonoBehaviour
     public List<float> offsetAfterUnsuckTry = new List<float>();
 
     private List<FinishReward> finishRewards = new List<FinishReward>();
-    private BoxCollider boxCollider;
+    private BoxCollider2D boxCollider;
 
     private Queue<float> offsetAfterUnsuckTryQueue;
     private float currentShiftTime;
@@ -16,12 +16,12 @@ public class RewardLine : MonoBehaviour
     private float targetPositionY;
     private float startPositionY;
 
-    private Rigidbody rigidbody;
+    private Rigidbody2D rigidbody;
 
     private void Awake()
     {
-        boxCollider = GetComponent<BoxCollider>();
-        rigidbody = GetComponent<Rigidbody>();
+        boxCollider = GetComponent<BoxCollider2D>();
+        rigidbody = GetComponent<Rigidbody2D>();
         offsetAfterUnsuckTryQueue = new Queue<float>(offsetAfterUnsuckTry);
     }
 
@@ -50,7 +50,7 @@ public class RewardLine : MonoBehaviour
         {
             var sucker = SuckerController.Instance.sucker1.isSucked ? SuckerController.Instance.sucker1 : SuckerController.Instance.sucker2;
             var positions = sucker.GetSuckerPositions();
-            Physics.OverlapSphere(positions.left, 0.1f, LayerMask.GetMask("Reward")).ToList()
+            Physics2D.OverlapCircleAll(positions.left, 0.1f, LayerMask.GetMask("Reward")).ToList()
                 .ForEach(x => 
                 {
                     if (x.TryGetComponent(out FinishReward finishReward))
@@ -58,7 +58,7 @@ public class RewardLine : MonoBehaviour
                         finishRewards.Add(finishReward);
                     }
                 });
-            Physics.OverlapSphere(positions.right, 0.1f, LayerMask.GetMask("Reward")).ToList()
+            Physics2D.OverlapCircleAll(positions.right, 0.1f, LayerMask.GetMask("Reward")).ToList()
                 .ForEach(x =>
                 {
                     if (x.TryGetComponent(out FinishReward finishReward))
@@ -70,8 +70,8 @@ public class RewardLine : MonoBehaviour
             finishRewards.Distinct();
             var middlePosition = finishRewards.Average(x => x.transform.position.x);
             var size = finishRewards.Sum(x => x.transform.localScale.x);
-            boxCollider.size = new Vector3(size, boxCollider.size.y, boxCollider.size.z);
-            boxCollider.center = new Vector3(middlePosition, boxCollider.center.y, boxCollider.center.z);
+            boxCollider.size = new Vector2(size, boxCollider.size.y);
+            boxCollider.offset = new Vector2(middlePosition, boxCollider.offset.y);
             SuckerController.Instance.sucker1.ableToUnSuck = false;
             SuckerController.Instance.sucker2.ableToUnSuck = false;
         }
@@ -93,8 +93,8 @@ public class RewardLine : MonoBehaviour
             finishRewards.ForEach(x =>
             {
                 x.rigidbody.isKinematic = false;
-                rigidbody.AddForce(Vector3.down * 20, ForceMode.Force);
-                rigidbody.constraints = RigidbodyConstraints.None;
+                rigidbody.AddForce(Vector3.down * 20, ForceMode2D.Force);
+                rigidbody.constraints = RigidbodyConstraints2D.None;
                 x.ShowChest();
             });
             rigidbody.isKinematic = false;
