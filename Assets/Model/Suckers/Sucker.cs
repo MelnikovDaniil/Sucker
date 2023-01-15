@@ -31,11 +31,13 @@ public class Sucker : MonoBehaviour
 
     private Animator animator;
     private FixedJoint2D connectionPlace;
+    private Transform chain;
 
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        chain = transform.parent;
     }
 
     private void Start()
@@ -50,6 +52,8 @@ public class Sucker : MonoBehaviour
         {
             if (ableToUnSuck)
             {
+                //transform.parent = chain;
+                //rigidbody.isKinematic = false;
                 animator.SetTrigger("unsuck");
                 StartCoroutine(UnSuckRoutine());
                 isSucked = false;
@@ -121,13 +125,21 @@ public class Sucker : MonoBehaviour
             yield return new WaitForEndOfFrame();
             connectionPlace = new GameObject($"ConnectionPlace of {this.name}", typeof(FixedJoint2D)).GetComponent<FixedJoint2D>();
             var placeRigidbody = connectionPlace.GetComponent<Rigidbody2D>();
+
+            connectionPlace.autoConfigureConnectedAnchor = false;
             placeRigidbody.isKinematic = true;
-            placeRigidbody.constraints = rigidbody.constraints;
+            //connectionPlace.dampingRatio = 1;
+            //connectionPlace.frequency = 300f;
             connectionPlace.transform.parent = obstacle.transform;
-            connectionPlace.transform.localScale = Vector3.one;
-            connectionPlace.transform.position = transform.position;
-            connectionPlace.transform.localRotation = Quaternion.identity;
+            //connectionPlace.transform.localScale = Vector3.one;
+            connectionPlace.transform.position = closiestPoint;
+            //connectionPlace.connectedAnchor = (closiestPoint - (Vector2)transform.position);
             connectionPlace.connectedBody = rigidbody;
+
+            //connectionPlace.transform.localRotation = Quaternion.identity;
+            //connectionPlace.autoConfigureConnectedAnchor = false;
+
+            //transform.parent = connectionPlace.transform;
 
             //rigidbody.isKinematic = true;
 

@@ -192,7 +192,8 @@ public class Chain : MonoBehaviour
 
             SetupSpring(spring);
 
-            rigidbody.angularDrag = 40;
+            rigidbody.angularDrag = 180;
+            rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
 
             collider.direction = CapsuleDirection2D.Horizontal; //x-axis orientation
             collider.size = new Vector2(elementWidth, elementHeight);
@@ -241,7 +242,8 @@ public class Chain : MonoBehaviour
         spring.autoConfigureDistance = false;
         spring.autoConfigureConnectedAnchor = false;
         spring.anchor = Vector3.down * elementHeight / 2f;
-        spring.distance = 0;
+        spring.dampingRatio = 1;
+        spring.distance = 0.025f;
         spring.frequency = springPower;
     }
 

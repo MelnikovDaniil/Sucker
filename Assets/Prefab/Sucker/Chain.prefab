@@ -552,11 +552,11 @@ MonoBehaviour:
   sucker2: {fileID: 3751489138864939027}
   obiRod: {fileID: 3435111057578283789}
   compressionLimit: 0.2
-  compressionTime: 1.5
-  decompressionTime: 0.1
+  compressionTime: 0.5
+  decompressionTime: 0.01
   maxElementAngle: 5
-  maxElementDistance: 1
-  springLenth: 4
+  maxElementDistance: 0.7
+  springLenth: 2
   springPower: 300
   chaintElementPrefab: {fileID: 41557378508138332, guid: 199f706a154bb0948b23d5ea18d91018, type: 3}
   elementHeight: 0.5
