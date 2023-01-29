@@ -8,9 +8,9 @@ using UnityEngine;
 
 public class Sucker : MonoBehaviour
 {
-    public event Action<Obstacle> OnSuck;
+    public event Action<Obstacle> OnSuckObstacle;
+    public event Action<Block> OnSuckBlock;
     public event Action OnUnSuck;
-    public event Action OnDeath;
     public event Action OnUnSuckTry;
     public Vector3 springConnectionPosition;
     public ParticleSystem suckParticles;
@@ -31,13 +31,11 @@ public class Sucker : MonoBehaviour
 
     private Animator animator;
     private FixedJoint2D connectionPlace;
-    private Transform chain;
 
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        chain = transform.parent;
     }
 
     private void Start()
@@ -56,9 +54,6 @@ public class Sucker : MonoBehaviour
                 //rigidbody.isKinematic = false;
                 animator.SetTrigger("unsuck");
                 StartCoroutine(UnSuckRoutine());
-                isSucked = false;
-                Destroy(connectionPlace);
-                connectionPlace = null;
                 OnUnSuck?.Invoke();
             }
             else
@@ -66,6 +61,14 @@ public class Sucker : MonoBehaviour
                 OnUnSuckTry?.Invoke();
             }
         }
+    }
+
+    public void Disconnect()
+    {
+        isSucked = false;
+        ableToSuck = true;
+        Destroy(connectionPlace);
+        connectionPlace = null;
     }
 
     private IEnumerator UnSuckRoutine()
@@ -92,16 +95,12 @@ public class Sucker : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "deathCollider")
-        {
-            OnDeath?.Invoke();
-        }
-        else if (ableToSuck && !isSucked
+        if (ableToSuck && !isSucked
             && other.attachedRigidbody?.gameObject != null)
         {
             if (other.attachedRigidbody.gameObject.TryGetComponent(out Block block))
             {
-                SuckBlock(block);
+                ConnectBlock(block);
             }
             else if (other.attachedRigidbody.gameObject.TryGetComponent(out Obstacle obstacle))
             {
@@ -110,16 +109,20 @@ public class Sucker : MonoBehaviour
         }
     }
 
-    private void SuckBlock(Block block)
+    private void ConnectBlock(Block block)
     {
         ableToSuck = false;
         isSucked = true;
+
         connectionPlace = block.gameObject.AddComponent<FixedJoint2D>();
-        var placeRigidbody = connectionPlace.GetComponent<Rigidbody2D>();
         connectionPlace.connectedBody = rigidbody;
         connectionPlace.autoConfigureConnectedAnchor = false;
+
         animator.SetTrigger("suck");
         suckParticles.Play();
+
+        block.Connect(this);
+        OnSuckBlock?.Invoke(block);
     }
 
     private IEnumerator SuckObstacleRoutine(Collider2D collider, Obstacle obstacle)
@@ -168,27 +171,9 @@ public class Sucker : MonoBehaviour
             animator.SetTrigger("suck");
             suckParticles.Play();
             obstacle.Connect();
-            OnSuck?.Invoke(obstacle);
+            OnSuckObstacle?.Invoke(obstacle);
         }
     }
-
-    //private float? CalculateRewardRotationAngle(bool isRightPositionPined)
-    //{
-    //    var suckerCurrentPositions = GetSuckerPositions();
-
-    //    var pinnedPoint = isRightPositionPined ? suckerCurrentPositions.right : suckerCurrentPositions.left;
-    //    var movingPoint = isRightPositionPined ? suckerCurrentPositions.left : suckerCurrentPositions.right;
-    //    var colliders = Physics.OverlapSphere(pinnedPoint, 0.1f, LayerMask.GetMask("Obstacle"));
-
-    //    if (colliders.Contains(searchingCollider))
-    //    {
-    //        var differenceVector = movingPoint - pinnedPoint;
-
-    //        return FindSuckAngle(searchingCollider, pinnedPoint, differenceVector, isRightPositionPined ? 1 : -1);
-    //    }
-
-    //    return null;
-    //}
 
     private float? CalculateRotationAngle(Collider2D searchingCollider, bool isRightPositionPined)
     {
@@ -233,25 +218,6 @@ public class Sucker : MonoBehaviour
 
         return angle;
     }
-
-    //private float? FindSuckAngle(Collider searchingSolider, float angle)
-    //{
-    //    var suckerPositions = GetSuckerPositions(angle);
-
-    //    var rightCollider = Physics.OverlapSphere(suckerPositions.right, 0.1f, LayerMask.GetMask("Obstacle"));
-    //    var leftCollider = Physics.OverlapSphere(suckerPositions.left, 0.1f, LayerMask.GetMask("Obstacle"));
-
-    //    if (rightCollider.FirstOrDefault(x => leftCollider.Contains(x)) != searchingSolider)
-    //    {
-    //        if (Mathf.Abs(angle) < maxRotationDuringSuck)
-    //        {
-    //            return FindSuckAngle(searchingSolider, angle + Mathf.Sign(angle));
-    //        }
-    //        return null;
-    //    }
-
-    //    return angle;
-    //} 
 
     public (Vector3 left, Vector3 right) GetSuckerPositions(float angle = 0)
     {

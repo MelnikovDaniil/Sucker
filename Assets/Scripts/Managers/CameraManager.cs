@@ -28,11 +28,11 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (followByPlunger)
-        {
-            var avarageSuckerY = (SuckerController.Instance.sucker1.transform.position.y + SuckerController.Instance.sucker2.transform.position.y) / 2f;
-            target = new Vector3(offset.x, avarageSuckerY + offset.y, transform.position.z);
-        }
+        //if (followByPlunger)
+        //{
+        //    var avarageSuckerY = (SuckerController.Instance.sucker1.transform.position.y + SuckerController.Instance.sucker2.transform.position.y) / 2f;
+        //    target = new Vector3(offset.x, avarageSuckerY + offset.y, transform.position.z);
+        //}
 
     }
 

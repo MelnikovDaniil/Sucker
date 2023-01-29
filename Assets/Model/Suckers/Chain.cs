@@ -1,14 +1,13 @@
 using Obi;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(Plunger))]
 public class Chain : MonoBehaviour
 {
-    public Sucker sucker1;
-    public Sucker sucker2;
-
     public ObiRod obiRod;
 
     [Space]
@@ -27,6 +26,11 @@ public class Chain : MonoBehaviour
     public ChainElement chaintElementPrefab;
     public float elementHeight = 0.5f;
     public float elementWidth = 1;
+
+    [NonSerialized]
+    public Sucker sucker1;
+    [NonSerialized]
+    public Sucker sucker2;
 
     private SoundGroupComponent soundGroupComponent;
 
@@ -194,6 +198,7 @@ public class Chain : MonoBehaviour
 
             rigidbody.angularDrag = 180;
             rigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+            rigidbody.gravityScale = sucker1.rigidbody.gravityScale;
 
             collider.direction = CapsuleDirection2D.Horizontal; //x-axis orientation
             collider.size = new Vector2(elementWidth, elementHeight);

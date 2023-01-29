@@ -29,12 +29,12 @@ public class FinishManager : MonoBehaviour
         SoundManager.PlaySound(finishSound);
         particles.Play();
         GameManager.Instance.DisableDeathCollider();
-        SuckerController.Instance.sucker1.OnSuck += rewardLine.SuckLine;
-        SuckerController.Instance.sucker2.OnSuck += rewardLine.SuckLine;
-        SuckerController.Instance.sucker1.OnSuck += ResultAfterReward;
-        SuckerController.Instance.sucker2.OnSuck += ResultAfterReward;
-        SuckerController.Instance.sucker1.OnUnSuckTry += rewardLine.UnSuckTry;
-        SuckerController.Instance.sucker2.OnUnSuckTry += rewardLine.UnSuckTry;
+        //SuckerController.Instance.sucker1.OnSuck += rewardLine.SuckLine;
+        //SuckerController.Instance.sucker2.OnSuck += rewardLine.SuckLine;
+        //SuckerController.Instance.sucker1.OnSuck += ResultAfterReward;
+        //SuckerController.Instance.sucker2.OnSuck += ResultAfterReward;
+        //SuckerController.Instance.sucker1.OnUnSuckTry += rewardLine.UnSuckTry;
+        //SuckerController.Instance.sucker2.OnUnSuckTry += rewardLine.UnSuckTry;
         resultsRoutine = StartCoroutine(ShowResultsRoutine());
     }
 

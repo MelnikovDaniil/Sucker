@@ -48,7 +48,7 @@ public class RewardLine : MonoBehaviour
     {
         if (obstacle.gameObject == gameObject)
         {
-            var sucker = SuckerController.Instance.sucker1.isSucked ? SuckerController.Instance.sucker1 : SuckerController.Instance.sucker2;
+            Sucker sucker = null;//SuckerController.Instance.sucker1.isSucked ? SuckerController.Instance.sucker1 : SuckerController.Instance.sucker2;
             var positions = sucker.GetSuckerPositions();
             Physics2D.OverlapCircleAll(positions.left, 0.1f, LayerMask.GetMask("Reward")).ToList()
                 .ForEach(x => 
@@ -72,8 +72,8 @@ public class RewardLine : MonoBehaviour
             var size = finishRewards.Sum(x => x.transform.localScale.x);
             boxCollider.size = new Vector2(size, boxCollider.size.y);
             boxCollider.offset = new Vector2(middlePosition, boxCollider.offset.y);
-            SuckerController.Instance.sucker1.ableToUnSuck = false;
-            SuckerController.Instance.sucker2.ableToUnSuck = false;
+            //SuckerController.Instance.sucker1.ableToUnSuck = false;
+            //SuckerController.Instance.sucker2.ableToUnSuck = false;
         }
     }
 
@@ -98,8 +98,8 @@ public class RewardLine : MonoBehaviour
                 x.ShowChest();
             });
             rigidbody.isKinematic = false;
-            SuckerController.Instance.sucker1.ableToSuck = false;
-            SuckerController.Instance.sucker1.ableToSuck = false;
+            //SuckerController.Instance.sucker1.ableToSuck = false;
+            //SuckerController.Instance.sucker1.ableToSuck = false;
             StartCoroutine(FinishManager.Instance.ShowResultsRoutine());
         }
     }
