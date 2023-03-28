@@ -25,6 +25,8 @@ public class GridManager : MonoBehaviour
         ClearCells();
         GenerageCells();
         GeneragePlungers(4);
+        gridCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+        gridCanvas.worldCamera = Camera.main;
     }
 
     private void DisableRaycasting()
