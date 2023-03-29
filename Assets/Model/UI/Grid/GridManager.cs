@@ -24,7 +24,7 @@ public class GridManager : MonoBehaviour
     {
         ClearCells();
         GenerageCells();
-        GeneragePlungers(4);
+        GeneragePlungers(8);
         gridCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         gridCanvas.worldCamera = Camera.main;
     }
