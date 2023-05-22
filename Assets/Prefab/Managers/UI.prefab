@@ -1146,6 +1146,7 @@ MonoBehaviour:
   grid: {fileID: 5549238086797774825}
   cellPrefab: {fileID: 5438715809669200872, guid: 6e2d748c35bf2244eadb3356a90e567e, type: 3}
   cellPlungerPrefab: {fileID: 1474581147629111275, guid: 4e3fb42fda4f0404fac21bfed1b50afb, type: 3}
+  plungerPrefab: {fileID: 5666500261712096217, guid: f177a1ce15200eb4eabe12dbeac5cf0b, type: 3}
   cellCount: 15
 --- !u!1 &1748011431669157615
 GameObject:

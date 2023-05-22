@@ -19,6 +19,10 @@ public class Sucker : MonoBehaviour
     public Vector3 suckerPosition;
     public float maxRotationDuringSuck;
 
+    [Space]
+    public MeshFilter meshFilter;
+    public MeshRenderer meshRenderer;
+
     [NonSerialized]
     public bool isSucked;
     [NonSerialized]
@@ -34,8 +38,12 @@ public class Sucker : MonoBehaviour
 
     private void Awake()
     {
+        var suckerObj = transform.GetChild(0).GetChild(0);
+
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        meshFilter = suckerObj.GetComponent<MeshFilter>();
+        meshRenderer = suckerObj.GetComponent<MeshRenderer>();
     }
 
     private void Start()

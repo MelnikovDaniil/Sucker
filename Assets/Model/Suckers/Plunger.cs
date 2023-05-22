@@ -35,7 +35,7 @@ public class Plunger : MonoBehaviour
             && connectedBlock != null)
         {
             connectedBlock.rigidbody.isKinematic = false;
-        } 
+        }
     }
 
     private void SetupSucker(Sucker sucker)
